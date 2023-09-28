@@ -6,7 +6,6 @@ const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const app = express();
-
 app.use(
     session({
       secret: 'xAtZ4Ol4W9hV6lVg04JsNlwsFvxTbA9WI6jptSiy82yS8UyAMVEBk0MeQeKqi9BJN8u1RisI1LdBordarVY6GMF7AfKE6hnwTN6WrLQmgt9XsuDiKVdwGN3r8zZzly0o', // Change this to a secure random string
@@ -17,20 +16,16 @@ app.use(
 // Initialize Passport 
 app.use(passport.initialize());
 app.use(passport.session());
-
-
 let host = "127.0.0.1"
 let port = 3000;
-
-
-
-app.get('/',async (req,res)=>{
+app.get('/user/:username',async (req,res)=>{
+    let {username} = req.params
     let testData = await prisma.user.findUnique({
         include: { 
             profile: true,
         },
         where: {
-            email:"testuser2@next.org"
+            username:username
         }
     })
     res.json(testData);
