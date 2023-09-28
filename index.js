@@ -1,3 +1,5 @@
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
 const express = require("express");
 const session = require('express-session');
 const passport = require('passport');
@@ -11,17 +13,43 @@ app.use(
       saveUninitialized: false,
     })
 );
-// Initialize Passport
-let host = "127.0.0.1"
-let port = 3000;
-let testData = {
-    id:0,
-    data:"Some test data"
+//Tests
+async function create(){
+    const new_data = await prisma.user.create({
+        data:{
+            username:"testuser2",
+            email:"testuser2@next.org",
+            password:"password",
+       profile: {
+        create: { 
+            first_name:"test",
+            second_name:"user",
+            cash:10000,
+            no_referals:10,
+         },
+        },
+    }})
 }
+//create()
+// Initialize Passport 
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/',(req,res)=>{
+
+let host = "127.0.0.1"
+let port = 3000;
+
+
+
+app.get('/',async (req,res)=>{
+    let testData = await prisma.user.findUnique({
+        include: { 
+            profile: true,
+        },
+        where: {
+            email:"testuser2@next.org"
+        }
+    })
     res.json(testData);
 })
 app.post('/auth/login',(req,res)=>{
