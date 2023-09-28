@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client')
+const bcrypt = require("bcryptjs")
 const prisma = new PrismaClient()
 const express = require("express");
 const session = require('express-session');
@@ -13,24 +14,6 @@ app.use(
       saveUninitialized: false,
     })
 );
-//Tests
-async function create(){
-    const new_data = await prisma.user.create({
-        data:{
-            username:"testuser2",
-            email:"testuser2@next.org",
-            password:"password",
-       profile: {
-        create: { 
-            first_name:"test",
-            second_name:"user",
-            cash:10000,
-            no_referals:10,
-         },
-        },
-    }})
-}
-//create()
 // Initialize Passport 
 app.use(passport.initialize());
 app.use(passport.session());

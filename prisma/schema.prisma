@@ -21,7 +21,8 @@ model UserProfile{
   first_name String
   second_name String
   cash Int
-  no_referals Int
+  no_referrals Int
+  referral_code String @default(uuid())
   user_id String @unique
   user User @relation(fields: [user_id], references: [userId])
 }
