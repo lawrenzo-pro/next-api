@@ -1,0 +1,7 @@
+
+> platform-x@0.0.1 start
+> node index.js
+
+Server started on 127.0.0.1:3000
+{ email: '{email}', password: '{password}' }
+{ email: 'aaaaa@aa.com', password: 'aaaaaaaaaaaaaaaa' }

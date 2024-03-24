@@ -3,8 +3,6 @@ const bcrypt = require("bcryptjs")
 const prisma = new PrismaClient()
 const express = require("express");
 const session = require('express-session');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
 const app = express();
 app.use(
     session({
@@ -13,28 +11,38 @@ app.use(
       saveUninitialized: false,
     })
 );
-// Initialize Passport 
-app.use(passport.initialize());
-app.use(passport.session());
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+  });
 let host = "127.0.0.1"
 let port = 3000;
 app.get('/user/:username',async (req,res)=>{
     let {username} = req.params
     let testData = await prisma.user.findUnique({
-        include: { 
+        select: { 
             profile: true,
         },
         where: {
             username:username
         }
     })
-    res.json(testData);
+    let testUser = await prisma.user.findUnique({
+        select: { 
+            username: true,
+        },
+        where: {
+            userId:testData.profile.user_id
+        }
+    })
+    res.json(testUser);
 })
 app.post('/auth/login',(req,res)=>{
-
+    console.log(req.query)
 })
 app.post('/auth/signup',(req,res)=>{
-
+    console.log(req.query);
 })
 app.listen(port,host,()=>{
     console.log(`Server started on ${host}:${port}`);
