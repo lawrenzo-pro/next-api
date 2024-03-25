@@ -44,6 +44,33 @@ app.post('/auth/login',(req,res)=>{
 app.post('/auth/signup',(req,res)=>{
     console.log(req.query);
 })
+app.get('/community:community_name', async (req,res) =>{
+    let community = await prisma.community.findUnique({
+        include: {
+            members:true
+        },
+        where:{
+            community_name: req.params
+        }
+    })
+    return res.json(community)
+})
+app.post('/trade', async (req,res) =>{
+    trade = req.query
+    let trader = await prisma.trader.findUnique({
+        include: {
+            trader: true
+        },
+        where: {
+            trader_id: req.query.trader_id
+        }
+    })
+    if(trader.trader.cash < req.query.amount){
+        res.sendJson({
+            status:"unable to execute trade"
+        })
+    }
+})
 app.listen(port,host,()=>{
     console.log(`Server started on ${host}:${port}`);
 })
